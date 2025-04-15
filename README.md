@@ -28,7 +28,7 @@ Create a new folder that is being hosted within the host direction from Apache.
 In this folder create a adjusted .env file which refers to the created database tables/servers
 
  in the root of the application make sure the composer components are updated : 
-    ```sh
+    ```
     composer update
     ```
 
