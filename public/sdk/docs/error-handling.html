@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Error Handling</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="../lib/sdk.css"> </head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Connecting of Things SDK Documentation</h1>
+            <p class="subtitle">Your guide to interacting with the API / Mock Server</p>
+        </header>
+        <header  >
+            <h3>API Error Handling</h3>
+            <p class="subtitle">Understanding and handling errors from the API</p>
+        </header>
+        <main>
+            <section id="error-responses" class="section">
+                <h2>Error Responses</h2>
+                <p>
+                    The API uses standard HTTP status codes to indicate the success or failure of a request.  In addition to the status code, the API may also return a JSON object with more specific information about the error.
+                </p>
+                <p>
+                    You should always check the HTTP status code before attempting to process the response.  Codes in the 2xx range indicate success, while codes in the 4xx and 5xx range indicate errors.
+                </p>
+            </section>
+
+            <section id="status-codes" class="section">
+                <h2>HTTP Status Codes</h2>
+                <p>The following table describes the most common HTTP status codes used by the API:</p>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Status Code</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>200 OK</td>
+                            <td>The request was successful.</td>
+                        </tr>
+                        <tr>
+                            <td>201 Created</td>
+                            <td>The request was successful and a new resource was created.</td>
+                        </tr>
+                        <tr>
+                            <td>204 No Content</td>
+                            <td>The request was successful, but there is no content to return.</td>
+                        </tr>
+                        <tr>
+                            <td>400 Bad Request</td>
+                            <td>The request was invalid or malformed.  Check the request parameters and try again.</td>
+                        </tr>
+                        <tr>
+                            <td>401 Unauthorized</td>
+                            <td>The request requires authentication, but the user is not authenticated.</td>
+                        </tr>
+                        <tr>
+                            <td>403 Forbidden</td>
+                            <td>The user is authenticated, but does not have permission to access the requested resource.</td>
+                        </tr>
+                        <tr>
+                            <td>404 Not Found</td>
+                            <td>The requested resource could not be found.</td>
+                        </tr>
+                         <tr>
+                            <td>405 Method Not Allowed</td>
+                            <td>The method specified in the request is not allowed for the resource.</td>
+                        </tr>
+                        <tr>
+                            <td>422 Unprocessable Entity</td>
+                            <td>The request was well-formed but was unable to be followed due to semantic errors.</td>
+                        </tr>
+                        <tr>
+                            <td>500 Internal Server Error</td>
+                            <td>An unexpected error occurred on the server.  Please try again later.</td>
+                        </tr>
+                        <tr>
+                            <td>503 Service Unavailable</td>
+                            <td>The server is currently unavailable.  Please try again later.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section id="error-object" class="section">
+                <h2>Error Object</h2>
+                <p>
+                    For 4xx and 5xx errors, the API may return a JSON object with the following structure:
+                </p>
+                <pre class="code-block">
+{
+  "error": {
+    "code": "error_code",
+    "message": "Error message describing the problem.",
+    "fields": {
+      "field1": "Error message for field1",
+      "field2": "Error message for field2",
+      // ...
+    }
+  }
+}
+                </pre>
+                <p>
+                    The <code class="code-block">error.code</code> field is a string that uniquely identifies the type of error.  The <code class="code-block">error.message</code> field provides a human-readable description of the error.  The <code class="code-block">error.fields</code> field is an optional object that provides error messages for specific fields in the request.
+                </p>
+            </section>
+
+            <section id="handling-errors" class="section">
+                <h2>Handling Errors</h2>
+                <p>
+                    Your application should handle API errors gracefully.  Here are some general guidelines:
+                </p>
+                <ul>
+                    <li>
+                        <strong>Check the HTTP status code:</strong>  This is the first and most important step.  Use the status code to determine the general category of the error and how to handle it.
+                    </li>
+                    <li>
+                        <strong>Parse the error object (if present):</strong>  If the API returns a JSON error object, parse it to get more specific information about the error.
+                    </li>
+                    <li>
+                        <strong>Display a user-friendly message:</strong>  Do not expose raw error messages to the user.  Instead, display a clear and concise message that explains what went wrong and how to fix it.
+                    </li>
+                     <li>
+                        <strong>Log the error:</strong>  Log the full error details (including the HTTP status code, error code, and error message) to help with debugging.
+                    </li>
+                    <li>
+                        <strong>Retry the request (if appropriate):</strong>  For some errors (e.g., 503 Service Unavailable), it may be appropriate to retry the request after a short delay.  However, do not retry requests that are unlikely to succeed (e.g., 400 Bad Request).
+                    </li>
+                </ul>
+            </section>
+            <section id="documentation-links" class="section-index">
+                <h2>Documentation Sections</h2>
+                <ul>
+                    <li><a href="index.html">home</a></li>
+                    <li><a href="api-reference.html">API Reference</a></li>
+                    <li><a href="authentication.html">Authentication</a></li>
+                    <li><a href="error-handling.html">Error Handling</a></li>
+                </ul>
+            </section>
+        </main>
+        <footer class="footer">
+            <p>&copy; Connecting Of Things. All rights reserved.</p>
+        </footer>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+</body>
+</html>

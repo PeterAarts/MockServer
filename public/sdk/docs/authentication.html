@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Authorization Guide</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
+    <link rel="stylesheet" href="../lib/sdk.css">
+   
+
+    </style>
+</head>
+<body>
+    <div class="container-xl">
+        <header>
+            <h1>Connecting of Things SDK Documentation</h1>
+            <p class="subtitle">Your guide to interacting with the API / Mock Server</p>
+        </header>
+        <main>
+            <section id="client-registration" class="section">
+                <h2>Client Registration</h2>
+                <p>
+                    Before using the API, your application must be registered with the authorization server.
+                    During registration, you will receive a <code class="code-block">client_id</code> and a
+                    <code class="code-block">client_secret</code>. These credentials are used to obtain
+                    access tokens.  This process is usually done through a secure web interface or API provided by the
+                    API provider.
+                </p>
+            </section>
+
+            <section id="obtaining-token" class="section">
+                <h2>Obtaining an Access Token</h2>
+                <p>
+                    To obtain an access token, make a <code class="code-block">POST</code> request to the
+                    <code class="code-block">tokenUrl</code>:
+                    <code class="code-block">https://api.rfmsconnect.nl:9123/api/token</code>
+                </p>
+                <p>
+                    Include the following parameters in the request body, using the
+                    <code class="code-block">application/x-www-form-urlencoded</code> format:
+                </p>
+                <ul>
+                    <li>
+                        <code class="code-block">grant_type</code>: Set to
+                        <code class="code-block">client_credentials</code>.
+                    </li>
+                    <li>
+                        <code class="code-block">client_id</code>: Your application's client ID.
+                    </li>
+                    <li>
+                        <code class="code-block">client_secret</code>: Your application's client secret.
+                    </li>
+                </ul>
+                <p>
+                    <span class="important">Example Request:</span>
+                </p>
+                <div class="tab-container">
+                    <div class="tab-buttons">
+                        <button class="tab-button active ms-3" data-tab="php">PHP</button>
+                        <button class="tab-button" data-tab="javascript">JavaScript</button>
+                    </div>
+                    <div class="tab-content active" id="php">
+                        <pre class="code-block">
+$url = 'https://api.rfmsconnect.nl:9123/api/token';
+$postData = http_build_query([
+    'grant_type' => 'client_credentials',
+    'client_id' => '&lt;your_client_id&gt;',
+    'client_secret' => '&lt;your_client_secret&gt;'
+]);
+
+$ch = curl_init($url);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_POST, true);
+curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
+curl_setopt($ch, CURLOPT_HTTPHEADER, [
+    'Content-Type: application/x-www-form-urlencoded'
+]);
+
+$response = curl_exec($ch);
+if (curl_errno($ch)) {
+    echo 'Curl error: ' . curl_error($ch);
+}
+curl_close($ch);
+
+echo $response;
+                        </pre>
+                    </div>
+                    <div class="tab-content" id="javascript">
+                        <pre class="code-block">
+const url = 'https://api.rfmsconnect.nl:9123/api/token';
+const data = {
+  grant_type: 'client_credentials',
+  client_id: '&lt;your_client_id&gt;',
+  client_secret: '&lt;your_client_secret&gt;'
+};
+
+fetch(url, {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/x-www-form-urlencoded'
+  },
+  body: new URLSearchParams(data).toString()
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));
+                        </pre>
+                    </div>
+                </div>
+                <p>
+                    If the credentials are valid, the server will return an access token in the response.
+                    The access token is a credential that your application uses to access protected resources.
+                </p>
+                <p>
+                    <span class="important">Example Response:</span>
+                </p>
+                <pre class="code-block">
+{
+    "access_token": "5652b5d4a83deeb9cd1a0cb0be74853f36711969",
+    "expires_in": 3600,
+    "token_type": "Bearer",
+    "scope": "13"
+}
+                </pre>
+            </section>
+
+            <section id="authenticated-requests" class="section">
+                <h2>Making Authenticated Requests</h2>
+                <p>
+                    Once you have an access token, you can make requests to protected API resources.  Include the
+                    access token in the <code class="code-block">Authorization</code> header of your HTTP
+                    request.  The header value should use the <code class="code-block">Bearer</code>
+                    authentication scheme.
+                </p>
+                <p>
+                    <span class="important">Format:</span>
+                    <code class="code-block">Authorization: Bearer &lt;access_token&gt;</code>
+                </p>
+                <p>
+                    <span class="important">Example Request:</span>
+                </p>
+                 <div class="tab-container">
+                    <div class="tab-buttons">
+                        <button class="tab-button active ms-3" data-tab="php-auth">PHP</button>
+                        <button class="tab-button" data-tab="javascript-auth">JavaScript</button>
+                    </div>
+                    <div class="tab-content active" id="php-auth">
+                        <pre class="code-block">
+$url = 'https://api.rfmsconnect.nl:9123/rfms/vehicles';
+$accessToken = '5652b5d4a83deeb9cd1a0cb0be74853f36711969';
+
+$ch = curl_init($url);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_HTTPHEADER, [
+    "Authorization: Bearer $accessToken"
+]);
+
+$response = curl_exec($ch);
+if (curl_errno($ch)) {
+    echo 'Curl error: ' . curl_error($ch);
+}
+curl_close($ch);
+
+echo $response; 
+                        </pre>
+                    </div>
+                    <div class="tab-content" id="javascript-auth">
+                        <pre class="code-block">
+const url = 'https://api.rfmsconnect.nl:9123/rfms/vehicles';
+const accessToken = '5652b5d4a83deeb9cd1a0cb0be74853f36711969';
+
+fetch(url, {
+  method: 'GET',
+  headers: {
+    'Authorization': `Bearer ${accessToken}`
+  }
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));
+                        </pre>
+                    </div>
+                </div>
+                <p>
+                    If the access token is valid, the API will process your request and return the requested data.  If the
+                    token is invalid or expired, the API will return an error, such as <code class="code-block">401 Unauthorized</code>.
+                </p>
+            </section>
+            <section id="documentation-links" class="section-index">
+                <h2>Documentation Sections</h2>
+                <ul>
+                    <li><a href="index.html">home</a></li>
+                    <li><a href="api-reference.html">API Reference</a></li>
+                    <li><a href="authentication.html">Authentication</a></li>
+                    <li><a href="error-handling.html">Error Handling</a></li>
+                </ul>
+            </section>
+        </main>
+        <footer class="footer">
+            <p>&copy; Connecting Of Things. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const tabButtons = document.querySelectorAll('.tab-button');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const tabName = button.dataset.tab;
+
+                tabButtons.forEach(b => b.classList.remove('active'));
+                tabContents.forEach(c => c.classList.remove('active'));
+
+                button.classList.add('active');
+                document.getElementById(tabName).classList.add('active');
+            });
+        });
+    });
+    </script>
+</body>
+</html>

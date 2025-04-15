@@ -1,0 +1,333 @@
+openapi: "3.0.0"
+info:
+  title: "Connecting of Things - API Endpoints"
+  version: "1.0.0"
+  description: "API definition for various services (authentication, RFMS, TPMS, Trailers, mockingserver)"
+paths:
+  /api/token:
+    post:
+      summary: "Retrieves a token"
+      description: "Retrieves a token."
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: "object"
+              properties:
+                username:
+                  type: "string"
+                  description: "Username"
+                password:
+                  type: "string"
+                  description: "Password"
+              required:
+                - "username"
+                - "password"
+      responses:
+        '200':
+          description: "Successful response"
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  token:
+                    type: "string"
+                    description: "The authentication token."
+                  expiration_date:
+                    type: "string"
+                    format: "date-time"
+                    description: "The expiration date and time of the token."
+  /rfms/vehicles:
+    get:
+      summary: "Retrieves a list of eligible vehicles"
+      description: "Retrieves a list of eligible vehicles."
+      parameters:
+        - name: "page"
+          in: "query"
+          description: "Page number to return"
+          required: false
+          schema:
+            type: "integer"
+        - name: "limit"
+          in: "query"
+          description: "Maximum number of vehicles per page"
+          required: false
+          schema:
+            type: "integer"
+            maximum: 200
+      responses:
+        '200':
+          description: "A list of vehicles"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  type: "object"
+                  properties:
+                    id:
+                      type: "integer"
+                      format: "int64"
+                      description: "Vehicle ID"
+                    vin:
+                      type: "string"
+                      description: "Vehicle Identification Number"
+                    customerVehicleName:
+                      type: "string"
+                      description: "Customer's name for the vehicle"
+                    cust_id:
+                      type: "integer"
+                      format: "int64"
+                      description: "Customer ID"
+                    vehicleActive:
+                      type: "integer"
+                      description: "Vehicle activity status (e.g., 1 for active)"
+                    description:
+                      type: "string"
+                      nullable: true
+                      description: "Vehicle description"
+                    brand:
+                      type: "string"
+                      description: "Vehicle brand"
+                    productionDate:
+                      type: "string"
+                      description: "Production year"
+                    vehicleType:
+                      type: "string"
+                      description: "Vehicle type"
+                    model:
+                      type: "string"
+                      description: "Vehicle model"
+                    emissionLevel:
+                      type: "string"
+                      description: "Emission level"
+                    possibleFuelType:
+                      type: "string"
+                      nullable: true
+                      description: "Possible fuel types"
+                    noOfAxles:
+                      type: "integer"
+                      description: "Number of axles"
+                    chassisType:
+                      type: "string"
+                      description: "Chassis type"
+                    totalFuelTankVolume:
+                      type: "integer"
+                      description: "Total fuel tank volume"
+                    tachographType:
+                      type: "string"
+                      description: "Tachograph type"
+                    gearboxType:
+                      type: "string"
+                      nullable: true
+                      description: "Gearbox type"
+                    hasRampOrLift:
+                      type: "boolean"
+                      nullable: true
+                      description: "Indicates if the vehicle has a ramp or lift"
+                    authorizedPaths:
+                      type: "string"
+                      nullable: true
+                      description: "Authorized paths for the vehicle"
+                    licensePlate:
+                      type: "string"
+                      description: "License plate number"
+                    AddDateTime:
+                      type: "string"
+                      format: "date-time"
+                      description: "Date and time the vehicle was added"
+                    UpdateDateTime:
+                      type: "string"
+                      format: "date-time"
+                      nullable: true
+                      description: "Date and time the vehicle was last updated"
+  /rfms/vehiclestatuses:
+    get:
+      summary: "Retrieves a list of vehicle statuses"
+      description: "Retrieves a list of vehicle statuses."
+      parameters: []
+      responses:
+        '200':
+          description: "A list of vehicle statuses"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  type: "object"
+                  properties:
+                    vin:
+                      type: "string"
+                      description: "Vehicle Identification Number"
+                    triggerType:
+                      type: "object"
+                      properties:
+                        triggerType:
+                          type: "string"
+                          description: "Type of trigger"
+                        context:
+                          type: "string"
+                          description: "Context of the trigger"
+                    createdDateTime:
+                      type: "string"
+                      format: "date-time"
+                      description: "Date and time the status was created"
+                    receivedDateTime:
+                      type: "string"
+                      format: "date-time"
+                      description: "Date and time the status was received"
+                    hrTotalVehicleDistance:
+                      type: "integer"
+                      format: "int64"
+                      description: "Total vehicle distance"
+                    totalEngineHours:
+                      type: "integer"
+                      description: "Total engine hours"
+                    driver1Id:
+                      type: "object"
+                      properties:
+                        tachoDriverIdentification:
+                          type: object
+                          properties:
+                            driverIdentification:
+                              type: "string"
+                              description: "Driver identification"
+                    engineTotalFuelUsed:
+                      type: "integer"
+                      format: "int64"
+                      description: "Total engine fuel used"
+                    snapshotData:
+                      type: "object"
+                      properties:
+                        gnssPosition:
+                          type: "object"
+                          properties:
+                            latitude:
+                              type: "number"
+                              format: "float"
+                              description: "Latitude"
+                            longitude:
+                              type: "number"
+                              format: "float"
+                              description: "Longitude"
+                            heading:
+                              type: "integer"
+                              description: "Heading"
+                            altitude:
+                              type: "integer"
+                              description: "Altitude"
+                        wheelBasedSpeed:
+                          type: "integer"
+                          description: "Wheel-based speed"
+                        tachographSpeed:
+                          type: "integer"
+                          description: "Tachograph speed"
+                        grossCombinationVehicleWeight:
+                          type: "integer"
+                          description: "Gross combination vehicle weight"
+                        fuelLevel1:
+                          type: "integer"
+                          description: "Fuel level 1"
+                        catalystFuelLevel:
+                          type: "integer"
+                          description: "Catalyst fuel level"
+                        ambientAirTemperature:
+                          type: "integer"
+                          description: "Ambient air temperature"
+                        driver1WorkingState:
+                          type: "string"
+                          description: "Driver 1's working state"
+  /tpms/tmps:
+    get:
+      summary: "Retrieves TPMS data"
+      description: "Retrieves TPMS data."
+      parameters: []
+      responses:
+        '200':
+          description: "Successful response"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  type: "object" # Add specific properties for TPMS data here
+                  properties:
+                    # Example
+                    tirePressure:
+                      type: "number"
+                      format: "float"
+                      description: "Tire pressure"
+                    tireTemperature:
+                      type: "number"
+                      format: "float"
+                      description: "Tire temperature"
+  /tpms/tmpsStatus:
+    get:
+      summary: "Retrieves TPMS historical data"
+      description: "Retrieves TPMS historical data."
+      parameters: []
+      responses:
+        '200':
+          description: "Successful response"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  type: "object" # Add detailed properties for TPMS status
+                  properties:
+                    # Example
+                    timestamp:
+                      type: "string"
+                      format: "date-time"
+                      description: "Timestamp of the status"
+                    status:
+                      type: "string"
+                      description: "Tire status (e.g., normal, warning, critical)"
+  /trailers:
+    get:
+      summary: "Retrieves trailers data"
+      description: "Retrieves trailers data."
+      parameters: []
+      responses:
+        '200':
+          description: "Successful response"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  type: "object" # Add trailer properties
+                  properties:
+                    #example
+                    trailerId:
+                      type: "string"
+                      description: "Trailer Identifier"
+                    trailerWeight:
+                      type: "number"
+                      description: "Trailer Weight"
+  /trailersStatus:
+    get:
+      summary: "Retrieves trailer historical data"
+      description: "Retrieves trailer historical data."
+      parameters: []
+      responses:
+        '200':
+          description: "Successful response"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  type: "object" #  properties for trailer status
+                  properties:
+                    #example
+                    statusTimestamp:
+                      type: "string"
+                      format: "date-time"
+                      description: "Timestamp"
+                    trailerStatus:
+                      type: "string"
+                      description: "Trailer Status"
