@@ -7,7 +7,7 @@ As being part of an eco-system to showcase the abilities of vehicle event data p
 # solution
 This solution provides mocked data based on real vehicle event data. The real data will be processed anonymously. The processing of the data takes care of lifetime counters of the vehicle event data.
 The data is being offered as an API. The API structure is equal to the rFMS standard being offered by OEM's like Scania, Volvo, Renault and DAF.
-The understand the API a SDK documentation is available which offers real-time collection examples that is retrieved from the mock data.
+To understand the API a SDK documentation is available which offers real-time collection examples that is retrieved from the mock data.
 
 # Dependencies :
 - Ben Schaffer => OAuth2 library
